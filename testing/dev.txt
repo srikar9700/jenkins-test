@@ -1,2 +1,2 @@
-Hello this is testing for stach the changes in dev branch
-
+Hello this is testing to revert the commit changes to previous:wq!
+and testing merge conflict with stage
