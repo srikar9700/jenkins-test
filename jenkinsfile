@@ -7,6 +7,11 @@ pipeline {
                 checkout scm
             }
         }
-    
+
+        stage('2. build and test') {
+            steps {
+                sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn clean package"
+            }
+        }
     }
 }
