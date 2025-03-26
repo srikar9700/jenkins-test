@@ -11,17 +11,21 @@ pipeline {
                     // Start a GitHub check run
                     githubChecks(
                         name: 'Checkout',
-                        conclusion: 'in_progress',
                         status: 'in_progress',
+                        conclusion: 'in_progress',
                         description: 'Starting the checkout stage'
                     )
+
+                    // Perform Git checkout
                     checkout scm
+
+                    // Update GitHub check with success status and details URL
                     githubChecks(
-                            name: 'Checkout',
-                            conclusion: 'success',
-                            status: 'completed',
-                            description: 'Checkout complete',
-                            detailsUrl: "http://localhost:8080/job/multi-branch-pipeline/job/dev/${env.BUILD_NUMBER}/console"
+                        name: 'Checkout',
+                        status: 'completed',
+                        conclusion: 'success',
+                        description: 'Checkout complete',
+                        detailsUrl: "http://localhost:8080/job/multi-branch-pipeline/job/dev/${env.BUILD_NUMBER}/console"
                     )
                 }
             }
