@@ -16,7 +16,7 @@ pipeline {
 
         stage('3. code coverage') {
             steps {
-                sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64, mvn jacaco:report"
+                sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64, mvn jacaoco:report"
             }
 
         }
