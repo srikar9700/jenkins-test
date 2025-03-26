@@ -23,7 +23,7 @@ pipeline {
 
         stage('4. SCA') {
             steps {
-                sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn org.owasp:depedency-check-maven:check"
+                sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn org.owasp:dependency-check-maven:check"
             }
         }
     }
