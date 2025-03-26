@@ -1,10 +1,29 @@
 pipeline {
     agent any
+    environment {
+        GITHUB_TOKEN = credentials('github-cred-tok') 
+    }
 
     stages {
         stage('1.GIT Checkout') {
             steps {
-                checkout scm
+                script {
+                    // Start a GitHub check run
+                    githubChecks(
+                        name: 'Checkout',
+                        conclusion: 'in_progress',
+                        status: 'in_progress',
+                        description: 'Starting the checkout stage'
+                    )
+                    checkout scm
+                    githubChecks(
+                            name: 'Checkout',
+                            conclusion: 'success',
+                            status: 'completed',
+                            description: 'Checkout complete',
+                            detailsUrl: "http://localhost:8080/job/multi-branch-pipeline/job/dev/${env.BUILD_NUMBER}/console"
+                    )
+                }
             }
         }
 
