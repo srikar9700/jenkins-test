@@ -26,5 +26,11 @@ pipeline {
                 sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn org.owasp:dependency-check-maven:check"
             }
         }
+
+        stage('5. sonar-scanner (SAST)') {
+            steps {
+                sh "mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html -Dsonar.projectName=vasu_sree_dev"
+            }
+        }
     }
 }
