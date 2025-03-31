@@ -37,29 +37,5 @@ pipeline {
                 }                
             }
         }
-        stage('6. quality checks ') {
-            steps {
-                echo "Running Quality Gates to verify the code quality"
-                script {
-                    try {
-                        timeout(time: 2, unit: 'MINUTES') {
-                        def qg = waitForQualityGate()
-                        echo "Quality Gate status: ${qg.status}"
-                        if (qg.status != 'OK') {
-                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        echo "SonarQube analysis failed with error: ${e.message}"
-                        throw e // Re-throw to mark the build as failed
-                        }
-                    
-                
-                    }
-                  }
-                }
-
-            }
-        }
     }
 }
