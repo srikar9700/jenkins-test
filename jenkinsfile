@@ -37,5 +37,18 @@ pipeline {
                 }                
             }
         }
+        stage('docker build and push') {
+            steps {
+                script {
+                    def registryCredential = credentials('dockerhub-token')
+
+                    docker.withRegistry('', registryCredential) {
+                        def myImage = docker.build("srikar9700/spring-dev:latest")
+
+                        myImage.push()
+                    }
+                }
+            }
+        }
     }
 }
