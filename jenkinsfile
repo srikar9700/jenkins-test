@@ -53,15 +53,16 @@ pipeline {
                     }
                 }
             }
-        }
+        }    
+    }
+}
+
     post {
         always {
             script {
                 def result = currentBuild.result ?: 'SUCCESS'
-
+                // Send build status to GitHub
                 githubCommitStatus(name: 'Build', context: 'CI', state: result)
-               }
             }
         }
     }
-}
