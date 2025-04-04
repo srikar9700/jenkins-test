@@ -54,13 +54,13 @@ pipeline {
                 }
             }
         }
-        post {
-            always {
-                script {
-                    def result = currentBuild.result ?: 'SUCCESS'
+    post {
+        always {
+            script {
+                def result = currentBuild.result ?: 'SUCCESS'
 
-                    githubCommitStatus(name: 'Build', context: 'CI', state: result)
-                }
+                githubCommitStatus(name: 'Build', context: 'CI', state: result)
+               }
             }
         }
     }
