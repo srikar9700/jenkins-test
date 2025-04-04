@@ -6,7 +6,7 @@ pipeline {
             steps {
                 checkout scm
                 script {
-                    githubCommitStatus(name: 'Checkout', context: 'CI', state: 'SUCCESS')
+                    githubCommitStatus context: 'CI', state: 'SUCCESS', name: 'checkout'
                 }
             }
         }
@@ -15,7 +15,7 @@ pipeline {
             steps {
                 sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn clean package"
                 script {
-                    githubCommitStatus(name: 'build and test', context: 'CI', state: 'SUCCESS')
+                    githubCommitStatus context: 'CI', state: 'SUCCESS', name: 'build and test'
                 }
             }
         }
