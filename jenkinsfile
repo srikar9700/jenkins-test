@@ -5,18 +5,27 @@ pipeline {
         stage('1.GIT Checkout') {
             steps {
                 checkout scm
+                script {
+                    githubCommitStatus(name: 'Checkout', context: 'CI', state: 'SUCCESS')
+                }
             }
         }
 
         stage('2. build and test') {
             steps {
                 sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn clean package"
+                script {
+                    githubCommitStatus(name: 'build and test', context: 'CI', state: 'SUCCESS')
+                }
             }
         }
 
         stage('3. code coverage') {
             steps {
                 sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn jacoco:report"
+                script {
+                    githubCommitStatus(name: 'code coverage', context: 'CI', state: 'SUCCESS')
+                }
             }
 
         }
@@ -24,6 +33,9 @@ pipeline {
         stage('4. SCA') {
             steps {
                 sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn org.owasp:dependency-check-maven:check"
+                script {
+                    githubCommitStatus(name: 'SCA', context: 'CI', state: 'SUCCESS')
+                }
             }
         }
 
