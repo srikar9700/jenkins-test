@@ -5,18 +5,27 @@ pipeline {
         stage('1.GIT Checkout') {
             steps {
                 checkout scm
+                script {
+                    githubCommitStatus context: 'CI', state: 'SUCCESS', name: 'checkout'
+                }
             }
         }
 
         stage('2. build and test') {
             steps {
                 sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn clean package"
+                script {
+                    githubCommitStatus context: 'CI', state: 'SUCCESS', name: 'build and test'
+                }
             }
         }
 
         stage('3. code coverage') {
             steps {
                 sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn jacoco:report"
+                script {
+                    githubCommitStatus(name: 'code coverage', context: 'CI', state: 'SUCCESS')
+                }
             }
 
         }
@@ -24,6 +33,9 @@ pipeline {
         stage('4. SCA') {
             steps {
                 sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn org.owasp:dependency-check-maven:check"
+                script {
+                    githubCommitStatus(name: 'SCA', context: 'CI', state: 'SUCCESS')
+                }
             }
         }
 
@@ -37,5 +49,32 @@ pipeline {
                 }                
             }
         }
+        stage('docker build and push') {
+            steps {
+                script {
+                    //def registryUrl = 'https://index.docker.io/v1/'
+                    //def registryCredential = 'dockerhub-token'
+                    withCredentials([string(credentialsId: 'dockerhub-token', variable: 'DOCKERHUB_TOKEN')]) {
+                    // Log in to Docker Hub
+                    sh "echo $DOCKERHUB_TOKEN | docker login -u srikar9700 --password-stdin"
+
+                    //docker.withRegistry(registryUrl, registryCredential) {
+                        def myImage = docker.build("srikar9700/spring-dev:latest")
+
+                        myImage.push()
+                    }
+                }
+            }
+        }    
     }
 }
+
+    post {
+        always {
+            script {
+                def result = currentBuild.result ?: 'SUCCESS'
+                // Send build status to GitHub
+                githubCommitStatus(name: 'Build', context: 'CI', state: result)
+            }
+        }
+    }
