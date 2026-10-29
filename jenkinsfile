@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('1.GIT Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('2. build and test') {
+            steps {
+                sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn clean package"
+            }
+        }
+
+        stage('3. code coverage') {
+            steps {
+                sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn jacoco:report"
+            }
+
+        }
+
+        stage('4. SCA') {
+            steps {
+                sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn org.owasp:dependency-check-maven:check"
+            }
+        }
+
+        stage('5. sonar-scanner (SAST)') {
+            steps {
+                echo " SonarQubescanner running"
+                withSonarQubeEnv('mysonarqube') {
+                    
+                    sh "mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html -Dsonar.projectName=vasu_sree_dev"
+
+                }                
+            }
+        }
+    }
+}
